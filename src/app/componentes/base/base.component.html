@@ -1,0 +1,111 @@
+<div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-6">
+        <div class="buscador-clientes">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="busquedaCliente"
+            placeholder="Buscar cliente..."
+            (input)="filtrarClientes()"
+          />
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="d-flex justify-content-end nuevo-cliente-container">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="nuevoClienteNombre"
+            placeholder="Nombre del nuevo cliente"
+          />
+          <button class="btn btn-success ml-2" (click)="agregarNuevoCliente()">Agregar Nuevo Cliente</button>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngFor="let cliente of clientesFiltrados; let i = index" class="cliente-card" [ngClass]="{'cliente-odd': i % 2 === 0, 'cliente-even': i % 2 !== 0}">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center" (click)="toggleCliente(cliente)">
+          <span *ngIf="clienteEditando !== cliente">{{ cliente.nombre }}</span>
+          <input *ngIf="clienteEditando === cliente" type="text" [(ngModel)]="clienteEditando.nombre" class="form-control">
+          <div>
+            <button class="btn btn-sm btn-primary" (click)="editarCliente(cliente)">
+              <i class="material-icons">edit</i>
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="eliminarCliente(i, $event)">
+              <i class="material-icons">delete</i>
+            </button>
+          </div>
+        </div>
+        <div class="row align-items-center">
+        <div class="card-body" *ngIf="clienteSeleccionado === cliente">
+          <p>Fecha de creación: {{ cliente.fecha }}</p>
+          <table class="planilla-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Estilo</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th>Fecha de compra</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let producto of cliente.productos; let j = index">
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.estilo }}</td>
+                <td>{{ producto.precio | currency }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>{{ producto.subtotal | currency }}</td>
+                <td>{{ producto.fechaCompra }}</td>
+                <td>
+                  <button class="btn btn-sm btn-success" (click)="venderProducto(cliente, producto)">
+                    <i class="material-icons">shopping_cart</i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="borrarProducto(cliente, j)">
+                    <i class="material-icons">delete</i>
+                  </button>
+                </td>
+              </tr>
+              <!-- Mostrar el total de compras del cliente -->
+              <tr>
+                <td colspan="4"></td>
+                <td><strong>Total Compras:</strong></td>
+                <td><strong>{{ calcularSubtotalCliente(cliente) | currency }}</strong></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="nuevo-producto-container">
+            <button class="btn btn-light nuevo-producto-btn" (click)="mostrarFormularioProducto(cliente)">Nuevo Producto</button>
+            <div *ngIf="clienteSeleccionado === cliente">
+              <input type="text" [(ngModel)]="nuevoProductoNombre" placeholder="Nombre del producto" />
+              <input type="text" [(ngModel)]="nuevoProductoEstilo" placeholder="Estilo del producto" />
+              <input type="number" [(ngModel)]="nuevoProductoPrecio" placeholder="Precio del producto" />
+              <button class="btn btn-success" (click)="agregarProductoCliente(cliente)">Agregar Producto</button>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    
+    <div class="total-container">
+      <div class="info-container">
+        <div class="info-item"><div class="productos-barra-abajo">
+          <button *ngFor="let producto of productosBarraAbajo" class="btn" [style.backgroundColor]="producto.color">
+            {{ producto.nombre }} - {{ producto.estilo }} {{ producto.cantidad > 1 ? '(' + producto.cantidad + ')' : '' }}
+          </button>
+        </div>
+          <p>Total: {{ calcularTotal() | currency }}</p>
+        </div>
+        <div class="info-item">
+          <p>Productos Vendidos: {{ calcularCantidadProductosVendidos() }}</p>
+        </div>
+      </div>
+      <button class="btn btn-danger" (click)="reiniciarPlanilla()">Reiniciar Planilla</button>
+    </div>
+  </div>
+  

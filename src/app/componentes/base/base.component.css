@@ -1,0 +1,145 @@
+body {
+    margin-top: 180px !important; /* Ajuste adicional para asegurar que la planilla no esté tapada por el navbar */
+  }
+  
+  .container-fluid {
+    margin-top: 100px;
+    background-color: #f5f5dc; /* Color crema claro */
+    padding: 20px;
+    border-radius: 10px; /* Bordes redondeados para un aspecto más suave */
+  }
+  
+  .table {
+    margin-top: 20px;
+    border-radius: 10px;
+    opacity: 0; /* Inicia con opacidad 0 para que no sea visible al principio */
+    transform: translateY(50px); /* Mueve la tabla hacia abajo 50px al inicio */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Agrega una transición suave */
+  }
+  
+  .table.show {
+    opacity: 1; /* Hace la tabla visible */
+    transform: translateY(0); /* Restaura la posición normal */
+  }
+  
+  @media (max-width: 767px) {
+    .table {
+      font-size: 12px;
+    }
+  }
+  
+  .planilla-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Alinea verticalmente */
+    height: 100vh; /* Esto asegura que la planilla ocupe toda la altura de la ventana */
+  }
+  
+  .planilla-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Sombra para un efecto más estético */
+  }
+  
+  .planilla-table th,
+  .planilla-table td {
+    border: 1px solid #ddd;
+    padding: 12px; /* Mayor espacio entre el texto y el borde */
+    text-align: center; /* Centra el contenido de las celdas */
+  }
+  
+  .planilla-table th {
+    background-color: #007bff; /* Color de fondo del encabezado */
+    color: #fff; /* Color del texto */
+  }
+  
+  .total-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo semitransparente negro */
+    color: #fff; /* Color de texto blanco */
+    padding: 10px;
+    text-align: center;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .info-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  
+  .info-item {
+    margin: 0 10px;
+  }
+  
+  .info-item p {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .btn-light {
+    background-color: #e2e6ea;
+    color: #495057;
+    padding: 8px 16px; /* Espaciado interno */
+    border: 1px solid #ccc; /* Borde del botón */
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s ease; /* Transición suave del color de fondo */
+  }
+  
+  .btn-light:hover {
+    background-color: #dae0e5; /* Color de fondo suave al pasar el mouse */
+  }
+  
+  .fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo semitransparente negro */
+    color: #fff; /* Color de texto blanco */
+    border-top: 1px solid #dee2e6;
+    padding: 10px;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  }
+  
+  .fixed-bottom .btn-danger {
+    margin-left: auto;
+  }
+  
+  .material-icons {
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  .btn {
+    /* Estilos generales del botón */
+    background-color: #4CAF50; /* Color de fondo por defecto */
+    color: #ffffff; /* Color del texto por defecto */
+    padding: 5px 10px; /* Espacio interno del botón reducido */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    text-align: center; /* Texto centrado */
+    text-decoration: none; /* Sin subrayado */
+    display: inline-block; /* Mostrar como un elemento en línea */
+    font-size: 12px; /* Tamaño de la fuente reducido */
+    margin: 2px; /* Margen exterior reducido */
+    cursor: pointer; /* Cursor al pasar por encima */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra debajo del botón */
+    transition-duration: 0.4s; /* Duración de la transición */
+  }
+  
+  .btn:hover {
+    background-color: #45a049; /* Cambio de color al pasar el cursor */
+    color: #ffffff; /* Cambio de color del texto al pasar el cursor */
+  }
+  
+  .btn:active {
+    background-color: #3e8e41; /* Color al presionar el botón */
+  }
+  
