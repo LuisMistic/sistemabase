@@ -1,46 +1,56 @@
 <div class="container-fluid">
-    <div class="row align-items-center">
-      <div class="col-sm-6">
-        <div class="buscador-clientes">
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="busquedaCliente"
-            placeholder="Buscar cliente..."
-            (input)="filtrarClientes()"
-          />
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="d-flex justify-content-end nuevo-cliente-container">
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="nuevoClienteNombre"
-            placeholder="Nombre del nuevo cliente"
-          />
-          <button class="btn btn-success ml-2" (click)="agregarNuevoCliente()">Agregar Nuevo Cliente</button>
-        </div>
+  <div class="row align-items-center">
+    <app-typewriter></app-typewriter>
+
+    <div class="col-sm-6">
+      <div class="buscador-clientes">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="busquedaCliente"
+          placeholder="Buscar cliente..."
+          (input)="filtrarClientes()"
+        />
       </div>
     </div>
-  
-    <div *ngFor="let cliente of clientesFiltrados; let i = index" class="cliente-card" [ngClass]="{'cliente-odd': i % 2 === 0, 'cliente-even': i % 2 !== 0}">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center" (click)="toggleCliente(cliente)">
-          <span *ngIf="clienteEditando !== cliente">{{ cliente.nombre }}</span>
-          <input *ngIf="clienteEditando === cliente" type="text" [(ngModel)]="clienteEditando.nombre" class="form-control">
-          <div>
-            <button class="btn btn-sm btn-primary" (click)="editarCliente(cliente)">
-              <i class="material-icons">edit</i>
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="eliminarCliente(i, $event)">
-              <i class="material-icons">delete</i>
-            </button>
-          </div>
+    <div class="col-sm-6">
+      <div class="d-flex justify-content-end nuevo-cliente-container">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="nuevoClienteNombre"
+          placeholder="Nombre del nuevo cliente"
+        />
+        <button class="btn btn-success ml-2" (click)="agregarNuevoCliente()">Agregar Nuevo Cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let cliente of clientesFiltrados; let i = index" class="cliente-card" [ngClass]="{'cliente-odd': i % 2 === 0, 'cliente-even': i % 2 !== 0}">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center" (click)="toggleCliente(cliente)">
+        <span *ngIf="clienteEditando !== cliente">{{ cliente.nombre }}</span>
+        <input *ngIf="clienteEditando === cliente" type="text" [(ngModel)]="clienteEditando.nombre" class="form-control">
+        <div>
+          <button class="btn btn-sm btn-primary" (click)="editarCliente(cliente)">
+            <i class="material-icons">edit</i>
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="eliminarCliente(i, $event)">
+            <i class="material-icons">delete</i>
+          </button>
         </div>
-        <div class="row align-items-center">
+      </div>
+      <div class="row align-items-center">
         <div class="card-body" *ngIf="clienteSeleccionado === cliente">
           <p>Fecha de creación: {{ cliente.fecha }}</p>
+          
+          <!-- Selector de Producto -->
+          <select [(ngModel)]="productoSeleccionado">
+            <option *ngFor="let producto of clienteSeleccionado?.productos" [ngValue]="producto">
+              {{ producto.nombre }}
+            </option>
+          </select>
+          
           <table class="planilla-table">
             <thead>
               <tr>
@@ -88,24 +98,25 @@
               <button class="btn btn-success" (click)="agregarProductoCliente(cliente)">Agregar Producto</button>
             </div>
           </div>
-        </div></div>
+        </div>
       </div>
     </div>
-    
-    <div class="total-container">
-      <div class="info-container">
-        <div class="info-item"><div class="productos-barra-abajo">
-          <button *ngFor="let producto of productosBarraAbajo" class="btn" [style.backgroundColor]="producto.color">
+  </div>
+
+  <div class="total-container">
+    <div class="info-container">
+      <div class="info-item">
+        <div class="productos-barra-abajo">
+          <button *ngFor="let producto of productosBarraAbajo" class="btn btn-custom">
             {{ producto.nombre }} - {{ producto.estilo }} {{ producto.cantidad > 1 ? '(' + producto.cantidad + ')' : '' }}
           </button>
         </div>
-          <p>Total: {{ calcularTotal() | currency }}</p>
-        </div>
-        <div class="info-item">
-          <p>Productos Vendidos: {{ calcularCantidadProductosVendidos() }}</p>
-        </div>
+        <p>Total: {{ calcularTotal() | currency }}</p>
       </div>
-      <button class="btn btn-danger" (click)="reiniciarPlanilla()">Reiniciar Planilla</button>
+      <div class="info-item">
+        <p>Productos Vendidos: {{ calcularCantidadProductosVendidos() }}</p>
+      </div>
     </div>
+    <button class="btn btn-danger" (click)="reiniciarPlanilla()">Reiniciar Planilla</button>
   </div>
-  
+</div>

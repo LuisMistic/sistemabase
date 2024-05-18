@@ -1,14 +1,26 @@
 body {
-    margin-top: 180px !important; /* Ajuste adicional para asegurar que la planilla no esté tapada por el navbar */
-  }
+  margin: 0; /* Asegura que no haya margen alrededor del cuerpo */
+  padding: 0; /* Asegura que no haya relleno alrededor del cuerpo */
+  background-color: #915f1e6e; /* Color marrón claro pastel */
+}
+
   
-  .container-fluid {
-    margin-top: 100px;
-    background-color: #f5f5dc; /* Color crema claro */
-    padding: 20px;
-    border-radius: 10px; /* Bordes redondeados para un aspecto más suave */
+.container-fluid {
+  position: fixed; /* Fijar la posición */
+  top: 0; /* Desde la parte superior de la ventana */
+  left: 0; /* Desde el borde izquierdo de la ventana */
+  width: 100%; /* Ancho completo */
+  height: 100%; /* Altura completa */
+  margin: 0; /* Sin margen */
+  padding: 20px; /* Relleno interno */
+  background-color: #915f1e6e; /* Color crema claro */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+  .card-body{
+    background-color: #90c90d41;
+    
   }
-  
   .table {
     margin-top: 20px;
     border-radius: 10px;
@@ -39,19 +51,21 @@ body {
   .planilla-table {
     width: 100%;
     border-collapse: collapse;
+    background-color: #f0ce5e48;
     margin-bottom: 20px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Sombra para un efecto más estético */
   }
   
   .planilla-table th,
   .planilla-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #a07d09;
+    background-color: #45a0491e;
     padding: 12px; /* Mayor espacio entre el texto y el borde */
     text-align: center; /* Centra el contenido de las celdas */
   }
   
   .planilla-table th {
-    background-color: #007bff; /* Color de fondo del encabezado */
+    background-color: #d4a422be; /* Color de fondo del encabezado */
     color: #fff; /* Color del texto */
   }
   
@@ -60,7 +74,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Fondo semitransparente negro */
+    background-color: rgba(0, 0, 0, 0.911); /* Fondo semitransparente negro */
     color: #fff; /* Color de texto blanco */
     padding: 10px;
     text-align: center;
@@ -86,7 +100,7 @@ body {
   }
   
   .btn-light {
-    background-color: #e2e6ea;
+    background-color: #2e6296;
     color: #495057;
     padding: 8px 16px; /* Espaciado interno */
     border: 1px solid #ccc; /* Borde del botón */
@@ -114,12 +128,12 @@ body {
   }
   
   .material-icons {
-    font-size: 18px;
+    font-size: 13px;
     vertical-align: middle;
   }
   .btn {
     /* Estilos generales del botón */
-    background-color: #4CAF50; /* Color de fondo por defecto */
+    background-color: #92900a; /* Color de fondo por defecto */
     color: #ffffff; /* Color del texto por defecto */
     padding: 5px 10px; /* Espacio interno del botón reducido */
     border: none; /* Sin borde */
@@ -128,7 +142,7 @@ body {
     text-decoration: none; /* Sin subrayado */
     display: inline-block; /* Mostrar como un elemento en línea */
     font-size: 12px; /* Tamaño de la fuente reducido */
-    margin: 2px; /* Margen exterior reducido */
+    margin: 1px; /* Margen exterior reducido */
     cursor: pointer; /* Cursor al pasar por encima */
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra debajo del botón */
     transition-duration: 0.4s; /* Duración de la transición */
@@ -142,4 +156,45 @@ body {
   .btn:active {
     background-color: #3e8e41; /* Color al presionar el botón */
   }
+
   
+  /* Estilos personalizados para los botones dentro de productos-barra-abajo */
+.productos-barra-abajo .btn-custom {
+  background-color: #cf223fb9; /* Cambiar el color de fondo */
+  color: #ffffff; /* Cambiar el color del texto */
+  border: 3px solid #ff99005d; /* Cambiar el borde */
+  border-radius: 5px; /* Agregar bordes redondeados */
+  padding: 5px 10px; /* Ajustar el relleno */
+  margin-right: 5px; /* Ajustar el margen derecho */
+}
+
+.productos-barra-abajo .btn-custom:hover {
+  background-color: #1d170a2c; /* Cambiar el color de fondo al pasar el mouse */
+  border-color: #ffcc66; /* Cambiar el color del borde al pasar el mouse */
+}
+/* styles.css */
+
+/* Estilo básico de la barra de título */
+.title-bar {
+  background-color: #333; /* Color de fondo predeterminado */
+  height: 30px; /* Altura de la barra de título */
+  -webkit-app-region: drag; /* Permite arrastrar la ventana haciendo clic en la barra de título */
+}
+
+/* Efecto de iluminación intermitente */
+@keyframes shine {
+  0% {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.7); /* Sombra inicial */
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.9); /* Sombra más intensa */
+  }
+  100% {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.7); /* Vuelve al estado inicial */
+  }
+}
+
+.title-bar {
+  background-color: rgba(128, 128, 128, 0.5); /* Gris transparente */
+  -webkit-app-region: drag; /* Permite arrastrar la ventana al hacer clic en la barra de título */
+}

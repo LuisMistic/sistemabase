@@ -8,7 +8,7 @@ interface Producto {
   precio: number;
   cantidad: number;
   subtotal: number;
-  fechaCompra?: string;
+  fechaCompra: string; // Modificado para ser requerido
 }
 
 // Define el tipo Cliente

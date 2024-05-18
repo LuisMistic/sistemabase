@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { IndexedDBService } from '../../indexed-db.service';
 
-interface Producto {
+export interface Producto {
   nombre: string;
   estilo: string;
   precio: number;
   cantidad: number;
   subtotal: number;
-  fechaCompra?: string;
+  fechaCompra: string;
 }
 
-interface Cliente {
+export interface Cliente {
   nombre: string;
   productos: Producto[];
   subtotal: number;
@@ -23,6 +23,8 @@ interface Cliente {
   styleUrls: ['./base.component.css']
 })
 export class BaseComponent implements OnInit {
+  productoSeleccionado: Producto | null = null;
+  clienteSeleccionado: Cliente | null = null;
   clientes: Cliente[] = [];
   clientesFiltrados: Cliente[] = [];
   nuevoProductoNombre: string = '';
@@ -30,10 +32,14 @@ export class BaseComponent implements OnInit {
   nuevoProductoPrecio: number = 0;
   nuevoClienteNombre: string = '';
   busquedaCliente: string = '';
-  clienteSeleccionado: Cliente | null = null;
+
   clienteEditando: Cliente | null = null;
   productosSugeridos: string[] = ['Cerveza', 'Vino', 'Refresco', 'Agua'];
   productosBarraAbajo: { nombre: string; estilo: string; cantidad: number; color: string }[] = [];
+  
+  // Nuevas propiedades para el formulario de ingreso de producto
+  mostrarFormularioIngreso: boolean = false;
+  costoConsumoProducto: number = 0;
 
   constructor(public indexedDBService: IndexedDBService) {
     const storedClientes = localStorage.getItem('clientes');
@@ -45,26 +51,40 @@ export class BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.indexedDBService.obtenerClientes().subscribe(clientes => {
-      this.clientes = clientes;
-      this.clientesFiltrados = clientes;
+    this.indexedDBService.obtenerClientes().subscribe((clientes: Cliente[]) => {
+      this.clientes = clientes as Cliente[];
+      this.clientesFiltrados = clientes as Cliente[];
+      this.actualizarDatosProductos();
     });
+  }
+
+  actualizarDatosProductos(): void {
+    const productosClientes: Producto[] = this.clientes.reduce((productos: Producto[], cliente: Cliente) => {
+      return productos.concat(cliente.productos);
+    }, []);
+
+    const productosBarraAbajoJSON = JSON.stringify(this.productosBarraAbajo);
+
+    localStorage.setItem('productosClientes', JSON.stringify(productosClientes));
+    localStorage.setItem('productosBarraAbajo', productosBarraAbajoJSON);
+
+    console.log('Datos de productos actualizados en el almacenamiento local.');
   }
 
   agregarNuevoCliente() {
     const nombreCliente = this.nuevoClienteNombre.trim();
-    
+
     if (nombreCliente === '') {
       return;
     }
-  
+
     const clienteExistente = this.clientes.find(cliente => cliente.nombre.toLowerCase() === nombreCliente.toLowerCase());
-    
+
     if (clienteExistente) {
       console.log(`El cliente "${nombreCliente}" ya existe.`);
       return;
     }
-  
+
     const nuevaFecha = new Date().toLocaleString();
     const nuevoCliente: Cliente = {
       nombre: nombreCliente,
@@ -72,7 +92,7 @@ export class BaseComponent implements OnInit {
       subtotal: 0,
       fecha: nuevaFecha
     };
-  
+
     this.clientes.unshift(nuevoCliente);
     this.clientesFiltrados = [...this.clientes];
     this.nuevoClienteNombre = '';
@@ -82,17 +102,17 @@ export class BaseComponent implements OnInit {
   seleccionarCliente(cliente: Cliente) {
     this.clienteSeleccionado = this.clienteSeleccionado === cliente ? null : cliente;
   }
-  
+
   editarCliente(cliente: Cliente) {
     this.clienteEditando = this.clienteEditando === cliente ? null : { ...cliente };
     this.actualizarDatos();
   }
-  
+
   guardarEdicionCliente(cliente: Cliente) {
     this.clienteEditando = null;
     this.actualizarDatos();
   }
-  
+
   eliminarCliente(index: number, event: MouseEvent) {
     event.stopPropagation();
     this.clientes.splice(index, 1);
@@ -105,28 +125,31 @@ export class BaseComponent implements OnInit {
   }
 
   agregarProductoCliente(cliente: Cliente) {
+    const nuevaFecha = new Date().toLocaleString();
     const nuevoProducto: Producto = {
       nombre: this.nuevoProductoNombre,
       estilo: this.nuevoProductoEstilo,
       precio: this.nuevoProductoPrecio,
       cantidad: 1,
-      subtotal: this.nuevoProductoPrecio
+      subtotal: this.nuevoProductoPrecio,
+      fechaCompra: nuevaFecha
     };
-  
     cliente.productos.push(nuevoProducto);
     this.actualizarSubtotalCliente(cliente);
     this.actualizarProductosBarraAbajo(nuevoProducto);
-  
+
     this.nuevoProductoNombre = '';
     this.nuevoProductoEstilo = '';
     this.nuevoProductoPrecio = 0;
+    this.mostrarFormularioIngreso = false; // Ocultar el formulario después de agregar el producto
     this.actualizarDatos();
   }
 
   venderProducto(cliente: Cliente, producto: Producto) {
+    const nuevaFecha = new Date().toLocaleString();
     producto.cantidad++;
     producto.subtotal = producto.cantidad * producto.precio;
-    producto.fechaCompra = new Date().toLocaleString();
+    producto.fechaCompra = nuevaFecha;
     this.actualizarSubtotalCliente(cliente);
     this.actualizarProductosBarraAbajo(producto);
     this.actualizarDatos();
@@ -134,20 +157,17 @@ export class BaseComponent implements OnInit {
 
   borrarProducto(cliente: Cliente, index: number) {
     const producto = cliente.productos[index];
-  
+
     if (producto.cantidad > 1) {
-      // Si el producto tiene más de una unidad, simplemente disminuimos la cantidad en 1
       producto.cantidad--;
-      producto.subtotal -= producto.precio; // Actualizamos el subtotal del producto
+      producto.subtotal -= producto.precio;
     } else {
-      // Si tiene solo una unidad, eliminamos el producto del inventario del cliente
       cliente.productos.splice(index, 1);
     }
-  
-    // Actualizamos el subtotal del cliente y la barra inferior
+
     this.actualizarSubtotalCliente(cliente);
     this.eliminarProductoBarraAbajo(producto);
-    this.actualizarDatos(); // Actualizamos los datos almacenados
+    this.actualizarDatos();
   }
 
   reiniciarPlanilla() {
@@ -185,13 +205,14 @@ export class BaseComponent implements OnInit {
       );
     }
   }
-  
+
   private actualizarSubtotalCliente(cliente: Cliente) {
     cliente.subtotal = cliente.productos.reduce((total, producto) => total + producto.subtotal, 0);
   }
-  
+
   private actualizarDatos() {
-    localStorage.setItem('clientes', JSON.stringify(this.clientes));
+    localStorage.setItem('clientes',
+    JSON.stringify(this.clientes));
     localStorage.setItem('productosBarraAbajo', JSON.stringify(this.productosBarraAbajo));
   }
 
@@ -209,7 +230,7 @@ export class BaseComponent implements OnInit {
             color: color
         });
     }
-}
+  }
 
   private eliminarProductoBarraAbajo(producto: Producto) {
     const productoExistenteIndex = this.productosBarraAbajo.findIndex(item => item.nombre === producto.nombre && item.estilo === producto.estilo);
@@ -227,23 +248,21 @@ export class BaseComponent implements OnInit {
   calcularSubtotalCliente(cliente: Cliente): number {
     return cliente.productos.reduce((total, producto) => total + producto.subtotal, 0);
   }
-  
+
   private generarColor(estilo: string): string {
-    // Convertimos el estilo en un número usando la suma de los códigos ASCII de los caracteres
     const hash = estilo.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    // Calculamos valores RGB basados en el hash
     const r = (hash & 0xFF0000) >> 16;
     const g = (hash & 0x00FF00) >> 8;
     const b = hash & 0x0000FF;
-    // Calculamos la luminosidad del color (fórmula de luminancia)
     const luminosidad = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    // Determinamos si el texto debe ser blanco o negro en función de la luminosidad
     const colorTexto = luminosidad > 0.5 ? '#ffffff' : '#000000';
-    // Ajustamos el brillo del color de fondo y lo convertimos en un color hexadecimal
-    const brillo = 0.9; // Valor de brillo deseado (0 a 1)
+    const brillo = 0.9;
     const colorFondo = '#' + ((r * brillo << 16) + (g * brillo << 8) + (b * brillo)).toString(16).padStart(6, '0');
     return colorFondo;
   }
-  
 
+  // Método para mostrar el formulario de ingreso de producto
+  mostrarFormularioIngresoProducto() {
+    this.mostrarFormularioIngreso = true;
+  }
 }

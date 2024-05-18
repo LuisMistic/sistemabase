@@ -6,12 +6,16 @@ import { AppComponent } from './app.component';
 
 import { FormsModule } from '@angular/forms';
 import { BaseComponent } from './componentes/base/base.component';
+import { BarraAbajoComponent } from './componentes/barra-abajo/barra-abajo.component';
+import { TypewriterComponent } from './componentes/typewriter/typewriter.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    BaseComponent
+    BaseComponent,
+    BarraAbajoComponent,
+    TypewriterComponent
     
   ],
   imports: [
